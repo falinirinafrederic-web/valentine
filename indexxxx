@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Valentine 💖</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #ffe6f0;
+      margin: 0;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .screen {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      transition: opacity 0.5s;
+    }
+
+    .hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    h1 {
+      color: #d63384;
+      margin-bottom: 50px;
+    }
+
+    .buttons {
+      position: relative;
+      height: 200px;
+    }
+
+    button {
+      font-size: 20px;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      position: absolute;
+      transition: transform 0.3s;
+    }
+
+    #yesBtn {
+      background-color: #ff4d6d;
+      color: white;
+      left: 40%;
+      top: 50%;
+    }
+
+    #noBtn {
+      background-color: #ccc;
+      color: black;
+      left: 60%;
+      top: 50%;
+    }
+
+    .text-below {
+      display: block;
+      margin-top: 20px;
+      font-size: 18px;
+      color: #d63384;
+    }
+
+    /* Texte final */
+    #finalMessage {
+      font-size: 50px;
+      color: #d63384;
+      opacity: 0;
+      position: relative;
+      margin-top: 50px;
+    }
+
+    #finalSubMessage {
+      font-size: 25px;
+      color: #d63384;
+      opacity: 0;
+      position: absolute;
+      bottom: 50px;
+    }
+
+    /* Animations */
+    @keyframes bounceIn {
+      0% { opacity: 0; transform: scale(0.5) translateY(-50px);}
+      50% { transform: scale(1.2) translateY(10px);}
+      70% { transform: scale(0.9) translateY(-5px);}
+      100% { opacity: 1; transform: scale(1) translateY(0);}
+    }
+
+    @keyframes floatUp {
+      to {
+        transform: translateY(-120vh);
+        opacity: 0;
+      }
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Écran 1 -->
+  <div id="screen1" class="screen">
+    <h1>Veux-tu être ma Valentine ? 💖</h1>
+    <div class="buttons">
+      <button id="yesBtn">Oui</button>
+      <span class="text-below" id="yesText"></span>
+      <button id="noBtn">Non</button>
+    </div>
+  </div>
+
+  <!-- Écran 2 -->
+  <div id="screen2" class="screen hidden">
+    <div id="finalMessage">Merci d'avoir accepté 💖</div>
+    <div id="finalSubMessage">Rendez-vous le 14 février – Frédéric</div>
+  </div>
+
+  <script>
+    // ----------------------------
+    // Bouton Non qui fuit
+    // ----------------------------
+    const noBtn = document.getElementById("noBtn");
+    const btnWidth = 120;
+    const btnHeight = 50;
+
+    noBtn.addEventListener("mouseenter", () => {
+      const maxX = window.innerWidth - btnWidth;
+      const maxY = window.innerHeight - btnHeight;
+
+      const newX = Math.random() * maxX;
+      const newY = Math.random() * maxY;
+
+      noBtn.style.left = newX + "px";
+      noBtn.style.top = newY + "px";
+    });
+
+    // ----------------------------
+    // Bouton Oui
+    // ----------------------------
+    const yesBtn = document.getElementById("yesBtn");
+    const yesText = document.getElementById("yesText");
+    const texts = ["T’es sûr ?", "Oui encore ?", "Vraiment ?", "Oui encore ?", "Allez 😳"];
+    let clickCount = 0;
+
+    yesBtn.addEventListener("click", () => {
+      clickCount++;
+
+      // Agrandissement progressif
+      const scale = 1 + clickCount * 0.2;
+      yesBtn.style.transform = `scale(${scale})`;
+
+      // Changement du texte
+      if (clickCount <= texts.length) {
+        yesText.textContent = texts[clickCount - 1];
+      }
+
+      // Après 5 clics, passer à l'écran final
+      if (clickCount === 5) {
+        setTimeout(() => {
+          document.getElementById("screen1").classList.add("hidden");
+          document.getElementById("screen2").classList.remove("hidden");
+          startFinalAnimation();
+        }, 500); // petit délai pour le dernier clic
+      }
+    });
+
+    // ----------------------------
+    // Écran final avec cœurs
+    // ----------------------------
+    const finalMessage = document.getElementById("finalMessage");
+    const finalSubMessage = document.getElementById("finalSubMessage");
+
+    function startFinalAnimation() {
+      // texte principal animé
+      finalMessage.style.opacity = 1;
+      finalMessage.style.animation = "bounceIn 1s forwards";
+
+      // explosion de cœurs
+      launchHearts();
+
+      // texte secondaire après 3 secondes
+      setTimeout(() => {
+        finalSubMessage.style.opacity = 1;
+        finalSubMessage.style.animation = "bounceIn 1s forwards";
+      }, 3000);
+    }
+
+    function launchHearts() {
+      for (let i = 0; i < 50; i++) {
+        const heart = document.createElement("div");
+        heart.textContent = "💖";
+        heart.style.position = "fixed";
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.top = "100vh";
+        heart.style.fontSize = Math.random() * 30 + 20 + "px";
+        heart.style.animation = `floatUp ${2 + Math.random() * 2}s ease-out forwards`;
+        document.body.appendChild(heart);
+
+        setTimeout(() => heart.remove(), 4000);
+      }
+    }
+
+  </script>
+</body>
+</html>
